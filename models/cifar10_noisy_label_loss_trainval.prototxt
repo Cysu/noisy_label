@@ -1,0 +1,511 @@
+name: "cifar10_noisy_label_loss"
+layer {
+  name: "cifar"
+  type: "Data"
+  top: "data"
+  include {
+    phase: TRAIN
+  }
+  transform_param {
+    mean_file: "external/exp/db/cifar10/cifar10_mean.binaryproto"
+  }
+  data_param {
+    source: "external/exp/db/cifar10/mixed_train_images"
+    batch_size: 100
+    backend: LMDB
+  }
+}
+layer {
+  name: "label_clean"
+  type: "Data"
+  top: "label_clean"
+  include {
+    phase: TRAIN
+  }
+  data_param {
+    source: "external/exp/db/cifar10/mixed_train_label_clean"
+    batch_size: 100
+    backend: LMDB
+  }
+}
+layer {
+  name: "label_noisy"
+  type: "Data"
+  top: "label_noisy"
+  include {
+    phase: TRAIN
+  }
+  data_param {
+    source: "external/exp/db/cifar10/mixed_train_label_noisy"
+    batch_size: 100
+    backend: LMDB
+  }
+}
+layer {
+  name: "label_ntype"
+  type: "Data"
+  top: "label_ntype"
+  include {
+    phase: TRAIN
+  }
+  data_param {
+    source: "external/exp/db/cifar10/mixed_train_label_ntype"
+    batch_size: 100
+    backend: LMDB
+  }
+}
+layer {
+  name: "cifar"
+  type: "Data"
+  top: "data"
+  top: "label_clean"
+  include {
+    phase: TEST
+  }
+  transform_param {
+    mean_file: "external/exp/db/cifar10/cifar10_mean.binaryproto"
+  }
+  data_param {
+    source: "external/exp/db/cifar10/test"
+    batch_size: 100
+    backend: LMDB
+  }
+}
+
+################################################################################
+#### Clean label prediction
+################################################################################
+layer {
+  name: "conv1_clean"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1_clean"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 32
+    pad: 2
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.0001
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "pool1_clean"
+  type: "Pooling"
+  bottom: "conv1_clean"
+  top: "pool1_clean"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "relu1_clean"
+  type: "ReLU"
+  bottom: "pool1_clean"
+  top: "pool1_clean"
+}
+layer {
+  name: "conv2_clean"
+  type: "Convolution"
+  bottom: "pool1_clean"
+  top: "conv2_clean"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 32
+    pad: 2
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu2_clean"
+  type: "ReLU"
+  bottom: "conv2_clean"
+  top: "conv2_clean"
+}
+layer {
+  name: "pool2_clean"
+  type: "Pooling"
+  bottom: "conv2_clean"
+  top: "pool2_clean"
+  pooling_param {
+    pool: AVE
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "conv3_clean"
+  type: "Convolution"
+  bottom: "pool2_clean"
+  top: "conv3_clean"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 64
+    pad: 2
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu3_clean"
+  type: "ReLU"
+  bottom: "conv3_clean"
+  top: "conv3_clean"
+}
+layer {
+  name: "pool3_clean"
+  type: "Pooling"
+  bottom: "conv3_clean"
+  top: "pool3_clean"
+  pooling_param {
+    pool: AVE
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "ip1_clean"
+  type: "InnerProduct"
+  bottom: "pool3_clean"
+  top: "ip1_clean"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 64
+    weight_filler {
+      type: "gaussian"
+      std: 0.1
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "ip2_clean"
+  type: "InnerProduct"
+  bottom: "ip1_clean"
+  top: "ip2_clean"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: "gaussian"
+      std: 0.1
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "ip2_clean"
+  bottom: "label_clean"
+  top: "accuracy"
+  include {
+    phase: TEST
+  }
+}
+layer {
+  name: "loss_clean"
+  type: "SoftmaxWithLoss"
+  bottom: "ip2_clean"
+  bottom: "label_clean"
+  top: "loss_clean"
+  loss_param {
+    ignore_label: -1
+    normalize: false
+  }
+}
+################################################################################
+#### Noise type prediction
+################################################################################
+layer {
+  name: "conv1_ntype"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1_ntype"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 32
+    pad: 2
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.0001
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+  include: {
+    phase: TRAIN
+  }
+}
+layer {
+  name: "pool1_ntype"
+  type: "Pooling"
+  bottom: "conv1_ntype"
+  top: "pool1_ntype"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+  include: {
+    phase: TRAIN
+  }
+}
+layer {
+  name: "relu1_ntype"
+  type: "ReLU"
+  bottom: "pool1_ntype"
+  top: "pool1_ntype"
+  include: {
+    phase: TRAIN
+  }
+}
+layer {
+  name: "conv2_ntype"
+  type: "Convolution"
+  bottom: "pool1_ntype"
+  top: "conv2_ntype"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 32
+    pad: 2
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+  include: {
+    phase: TRAIN
+  }
+}
+layer {
+  name: "relu2_ntype"
+  type: "ReLU"
+  bottom: "conv2_ntype"
+  top: "conv2_ntype"
+  include: {
+    phase: TRAIN
+  }
+}
+layer {
+  name: "pool2_ntype"
+  type: "Pooling"
+  bottom: "conv2_ntype"
+  top: "pool2_ntype"
+  pooling_param {
+    pool: AVE
+    kernel_size: 3
+    stride: 2
+  }
+  include: {
+    phase: TRAIN
+  }
+}
+layer {
+  name: "conv3_ntype"
+  type: "Convolution"
+  bottom: "pool2_ntype"
+  top: "conv3_ntype"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 64
+    pad: 2
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+  include: {
+    phase: TRAIN
+  }
+}
+layer {
+  name: "relu3_ntype"
+  type: "ReLU"
+  bottom: "conv3_ntype"
+  top: "conv3_ntype"
+  include: {
+    phase: TRAIN
+  }
+}
+layer {
+  name: "pool3_ntype"
+  type: "Pooling"
+  bottom: "conv3_ntype"
+  top: "pool3_ntype"
+  pooling_param {
+    pool: AVE
+    kernel_size: 3
+    stride: 2
+  }
+  include: {
+    phase: TRAIN
+  }
+}
+layer {
+  name: "ip1_ntype"
+  type: "InnerProduct"
+  bottom: "pool3_ntype"
+  top: "ip1_ntype"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 64
+    weight_filler {
+      type: "gaussian"
+      std: 0.1
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+  include: {
+    phase: TRAIN
+  }
+}
+layer {
+  name: "ip2_ntype"
+  type: "InnerProduct"
+  bottom: "ip1_ntype"
+  top: "ip2_ntype"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.1
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+  include: {
+    phase: TRAIN
+  }
+}
+layer {
+  name: "loss_ntype"
+  type: "SoftmaxWithLoss"
+  bottom: "ip2_ntype"
+  bottom: "label_ntype"
+  top: "loss_ntype"
+  include {
+    phase: TRAIN
+  }
+  loss_param {
+    ignore_label: -1
+  }
+}
+################################################################################
+#### Noisy label loss
+################################################################################
+layer {
+  name: "loss_noisy"
+  type: "SoftmaxWithNoisyLabelLoss"
+  bottom: "ip2_clean"
+  bottom: "ip2_ntype"
+  bottom: "label_noisy"
+  top: "loss_noisy"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  softmax_noisy_label_loss_param {
+    matrix_c_filler {
+      type: "blob_proto"
+      source: "external/exp/db/cifar10/matrix_c.binaryproto"
+    }
+  }
+  include: {
+    phase: TRAIN
+  }
+}

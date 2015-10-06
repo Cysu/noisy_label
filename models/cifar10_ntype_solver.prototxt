@@ -1,0 +1,21 @@
+net: "models/cifar10_ntype_trainval.prototxt"
+
+test_iter: 100
+test_interval: 500
+test_initialization: false
+
+base_lr: 0.0001
+lr_policy: "step"
+gamma: 0.1
+stepsize: 1000
+max_iter: 1500
+
+display: 100
+average_loss: 100
+
+momentum: 0.9
+weight_decay: 0.004
+
+snapshot: 1500
+snapshot_prefix: "external/exp/models/cifar10_ntype"
+solver_mode: CPU
