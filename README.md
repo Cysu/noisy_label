@@ -7,7 +7,7 @@ The repository contains the code of our CVPR15 paper *Learning from Massive Nois
 1.  Clone this repository
 
         # Make sure to clone with --recursive to get the modified Caffe
-        git clone --recursive https://github.com/Cysu/cvpr15_project.git
+        git clone --recursive https://github.com/Cysu/noisy_label.git
 
 2.  Build the Caffe
 
@@ -21,7 +21,7 @@ The repository contains the code of our CVPR15 paper *Learning from Massive Nois
 
         cd -
 
-3.  Setup an experiment directory. You can either create a new one under external/, or make a link to other directory you like.
+3.  Setup an experiment directory. You can either create a new one under external/, or make a link to another existing directory.
 
         mkdir external/exp
 
@@ -59,3 +59,14 @@ The repository contains the code of our CVPR15 paper *Learning from Massive Nois
         scripts/train_cifar10_ntype.sh
         scripts/init_cifar10_noisy_label_loss.sh
         scripts/train_cifar10_noisy_label_loss.sh
+
+We provide the training logs in logs/ just for your reference.
+
+## Reference
+
+    @inproceedings{xiao2015learning,
+      title={Learning from Massive Noisy Labeled Data for Image Classification},
+      author={Xiao, Tong and Xia, Tian and Yang, Yi and Huang, Chang and Wang, Xiaogang},
+      booktitle={CVPR},
+      year={2015}
+    }
