@@ -130,3 +130,11 @@ $RECYCLE.BIN/
 *.pkl
 *.caffemodel
 *.solverstate
+
+# Sublime Text settings
+*.sublime-workspace
+*.sublime-project
+
+# Editor temporaries
+*.swp
+*~
