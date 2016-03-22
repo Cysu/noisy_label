@@ -1,4 +1,4 @@
-net: "models/cifar10_noisy_label_loss_trainval.prototxt"
+net: "models/cifar10/noisy_gt_ft_clean_trainval.prototxt"
 
 test_iter: 100
 test_interval: 500
@@ -16,6 +16,6 @@ average_loss: 100
 momentum: 0.9
 weight_decay: 0.004
 
-snapshot: 8000
-snapshot_prefix: "external/exp/models/cifar10_noisy_label_loss"
-solver_mode: CPU
+snapshot: 6000
+snapshot_prefix: "external/exp/snapshots/cifar10/noisy_gt_ft_clean"
+solver_mode: GPU

@@ -221,5 +221,6 @@ layer {
   top: "loss_clean"
   loss_param {
     ignore_label: -1
+    normalize: false
   }
 }

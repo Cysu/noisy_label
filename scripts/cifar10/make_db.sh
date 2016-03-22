@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Make the auxiliary files and databases for the baidu dataset
+# Make the auxiliary files and databases for the cifar10 dataset
 
-cd $(dirname ${BASH_SOURCE[0]})/../
+cd $(dirname ${BASH_SOURCE[0]})/../../
 
 CAFFE=external/caffe
 EXP=external/exp
@@ -20,16 +20,20 @@ fi
 
 DATA_ROOT=$EXP/datasets/cifar10
 OUTPUT_DIR=$EXP/db/cifar10
+SNAPSHOTS_DIR=$EXP/snapshots/cifar10
+LOGS_DIR=logs/cifar10
 
 # setup output directory
 rm -rf ${OUTPUT_DIR}
 mkdir -p ${OUTPUT_DIR}
+mkdir -p ${SNAPSHOTS_DIR}
+mkdir -p ${LOGS_DIR}
 
 # make auxiliary files
 echo "Making auxiliary files"
-python2 cifar10/convert_raw_dataset.py ${DATA_ROOT} ${OUTPUT_DIR}
-python2 cifar10/generate_noisy_labels.py ${OUTPUT_DIR} --level ${NOISE_LEVEL}
-python2 cifar10/estimate_matrix_c.py ${OUTPUT_DIR}
+python2 data/cifar10/convert_raw_dataset.py ${DATA_ROOT} ${OUTPUT_DIR}
+python2 data/cifar10/generate_noisy_labels.py ${OUTPUT_DIR} --level ${NOISE_LEVEL}
+python2 data/cifar10/estimate_matrix_c.py ${OUTPUT_DIR}
 python2 tools/convert_to_blobproto.py \
     ${OUTPUT_DIR}/matrix_q.pkl ${OUTPUT_DIR}/true_matrix_q.binaryproto
 python2 tools/convert_to_blobproto.py \

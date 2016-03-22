@@ -1,4 +1,4 @@
-net: "models/cifar10_ntype_trainval.prototxt"
+net: "models/cifar10/ntype_trainval.prototxt"
 
 test_iter: 100
 test_interval: 500
@@ -17,5 +17,5 @@ momentum: 0.9
 weight_decay: 0.004
 
 snapshot: 1500
-snapshot_prefix: "external/exp/models/cifar10_ntype"
-solver_mode: CPU
+snapshot_prefix: "external/exp/snapshots/cifar10/ntype"
+solver_mode: GPU
