@@ -98,7 +98,14 @@ Clothing1M is the dataset we proposed in our paper.
         scripts/clothing1M/init_noisy_label_loss.sh
         scripts/clothing1M/train_noisy_label_loss.sh
 
-We provide the training logs in `logs/clothing1M/` for reference.
+We provide the training logs in `logs/clothing1M/` for reference. A final trained model is also provided [here](https://drive.google.com/open?id=0B67_d0rLRTQYX0dPVzI1ejdrS2s). To test the performance, please download the model, place it under `external/exp/snapshots/clothing1M/`, and then
+
+    # Run the test
+    external/caffe/build/tools/caffe test \
+        -model models/clothing1M/noisy_label_loss_test.prototxt \
+        -weights external/exp/snapshots/clothing1M/noisy_label_loss_inference.caffemodel \
+        -iterations 106 \
+        -gpu 0
 
 ## Reference
 
