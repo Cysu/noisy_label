@@ -1,0 +1,21 @@
+net: "models/clothing1M/noisy_label_loss_trainval.stage2.prototxt"
+
+test_iter: 144
+test_interval: 200
+test_initialization: true
+
+base_lr: 0.001
+lr_policy: "step"
+gamma: 0.1
+stepsize: 50000
+max_iter: 160000
+
+display: 20
+average_loss: 20
+
+momentum: 0.9
+weight_decay: 0.0005
+
+snapshot: 10000
+snapshot_prefix: "external/exp/snapshots/clothing1M/noisy_label_loss"
+solver_mode: GPU

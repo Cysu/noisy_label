@@ -1,0 +1,21 @@
+net: "models/clothing1M/clean_trainval.prototxt"
+
+test_iter: 144
+test_interval: 200
+test_initialization: true
+
+base_lr: 0.001
+lr_policy: "step"
+gamma: 0.1
+stepsize: 10000
+max_iter: 15000
+
+display: 20
+average_loss: 20
+
+momentum: 0.9
+weight_decay: 0.0005
+
+snapshot: 10000
+snapshot_prefix: "external/exp/snapshots/clothing1M/clean"
+solver_mode: GPU
