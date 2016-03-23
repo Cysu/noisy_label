@@ -52,4 +52,4 @@ make_labelset mixed_train_label_ntype
 echo "Making mean file"
 $CAFFE/build/tools/compute_image_mean \
     -backend lmdb \
-    ${OUTPUT_DIR}/clean_train ${OUTPUT_DIR}/clothing_mean.binaryproto
+    ${OUTPUT_DIR}/clean_train ${OUTPUT_DIR}/clothing1M_mean.binaryproto
