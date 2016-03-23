@@ -107,6 +107,15 @@ We provide the training logs in `logs/clothing1M/` for reference. A final traine
         -iterations 106 \
         -gpu 0
 
+## Tips
+
+The self-brewed `external/caffe` supports data parallel with multiple GPUs using MPI. One can accelerate the training / test process by
+
+1.  Compile the caffe with MPI enabled
+2.  Tweak the training shell scripts to use multiple GPUs, for example, `mpirun -n 2 ... -gpu 0,1`
+
+Detailed instructions are listed [here](https://github.com/Cysu/caffe).
+
 ## Reference
 
     @inproceedings{xiao2015learning,
