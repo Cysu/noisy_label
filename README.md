@@ -61,7 +61,7 @@ We provide the training logs in `logs/cifar10/` for reference.
 
 Clothing1M is the dataset we proposed in our paper.
 
-1.  Download the dataset. Please contact *xiaotong[at]ee[dot]cuhk.edu.hk* to get the download link. Untar the images and unzip the annotations under `external/exp/datasets/clothing1M`. The directory structure should be
+1.  Download the dataset. Please contact *tong.xiao.work[at]gmail[dot]com* to get the download link. Untar the images and unzip the annotations under `external/exp/datasets/clothing1M`. The directory structure should be
 
         external/exp/datasets/clothing1M/
         ├── category_names_chn.txt
